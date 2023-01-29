@@ -1,13 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Button } from "reactstrap";
+import { Button, Modal, ModalBody } from "reactstrap";
 import axios from "axios";
+import Spinner from "../../Spinner/Spinner";
+import { resetIngredients } from "../../../redux/actionCreators";
 
 const mapStateToProps = (state) => {
   return {
     ingredients: state.ingredients,
     totalPrice: state.totalPrice,
     purchasable: state.purchasable,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    resetIngredients: () => dispatch(resetIngredients()),
   };
 };
 
@@ -18,6 +26,9 @@ class Checkout extends Component {
       phone: "",
       paymentType: "Cash On Delivery",
     },
+    isLoading: false,
+    isModalOpen: false,
+    modalMsg: "",
   };
 
   goBack = () => {
@@ -34,6 +45,7 @@ class Checkout extends Component {
   };
 
   submitHandler = () => {
+    this.setState({ isLoading: true });
     const order = {
       ingredients: this.props.ingredients,
       customer: this.state.values,
@@ -46,12 +58,35 @@ class Checkout extends Component {
 
     axios
       .post(endpoint, order)
-      .then((response) => console.log(response))
-      .catch((err) => console.log(err));
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({
+            isLoading: false,
+            isModalOpen: true,
+            modalMsg: "Order Placed Successfully!",
+          });
+          this.props.resetIngredients();
+        } else {
+          this.setState({
+            isLoading: false,
+            isModalOpen: true,
+            modalMsg: "Something Went Wrong! Order Again!",
+          });
+        }
+        console.log(response);
+      })
+      .catch((err) => {
+        this.setState({
+          isLoading: false,
+          isModalOpen: true,
+          modalMsg: "Something Went Wrong! Order Again!",
+        });
+        console.log(err);
+      });
   };
 
   render() {
-    return (
+    let form = (
       <div>
         <h4
           style={{
@@ -101,6 +136,7 @@ class Checkout extends Component {
             style={{ backgroundColor: "#D70F64" }}
             className="mr-auto"
             onClick={this.submitHandler}
+            disabled={!this.props.purchasable}
           >
             Place Order
           </Button>
@@ -110,7 +146,18 @@ class Checkout extends Component {
         </form>
       </div>
     );
+
+    return (
+      <div>
+        {this.state.isLoading ? <Spinner /> : form}
+        <Modal isOpen={this.state.isModalOpen} onClick={this.goBack}>
+          <ModalBody>
+            <p>{this.state.modalMsg}</p>
+          </ModalBody>
+        </Modal>
+      </div>
+    );
   }
 }
 
-export default connect(mapStateToProps)(Checkout);
+export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
