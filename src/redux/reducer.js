@@ -12,7 +12,7 @@ const INITIAL_STATE = {
     { type: "cheese", amount: 0 },
     { type: "meat", amount: 0 },
   ],
-  totalPrice: 0.5,
+  totalPrice: 0,
   purchasable: false,
 };
 
@@ -45,11 +45,11 @@ export const reducer = (state = INITIAL_STATE, action) => {
     case actionTypes.UPDATE_PURCHASABLE:
       const sum = state.ingredients.reduce((sum, element) => {
         return sum + element.amount;
-      }, 0.5);
+      }, 0);
 
       return {
         ...state,
-        purchasable: sum > 0.5,
+        purchasable: sum > 0,
       };
 
     default:
