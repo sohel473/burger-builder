@@ -12,24 +12,22 @@ export default class BurgerBuilder extends React.Component {
   };
 
   addIngredientHandler = (type) => {
-    const updatedIngredients = [...this.state.ingredients];
-    const index = updatedIngredients.findIndex(
-      (ingredient) => ingredient.type === type
-    );
-    updatedIngredients[index].amount += 1;
-    this.setState({ ingredients: updatedIngredients });
+    const ingredients = [...this.state.ingredients];
+    for (let item of ingredients) {
+      if (item.type === type) item.amount++;
+    }
+    this.setState({ ingredients: ingredients });
   };
 
   removeIngredientHandler = (type) => {
-    const updatedIngredients = [...this.state.ingredients];
-    const index = updatedIngredients.findIndex(
-      (ingredient) => ingredient.type === type
-    );
-    if (updatedIngredients[index].amount <= 0) {
-      return;
+    const ingredients = [...this.state.ingredients];
+    for (let item of ingredients) {
+      if (item.type === type) {
+        if (item.amount <= 0) return;
+        item.amount--;
+      }
     }
-    updatedIngredients[index].amount -= 1;
-    this.setState({ ingredients: updatedIngredients });
+    this.setState({ ingredients: ingredients });
   };
 
   render() {

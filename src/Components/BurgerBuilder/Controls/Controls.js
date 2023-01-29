@@ -22,8 +22,18 @@ const BuildControl = (props) => {
       >
         {props.label}
       </div>
-      <Button className="btn btn-danger btn-sm m-1">Less</Button>
-      <Button className="btn btn-success btn-sm m-1">More</Button>
+      <Button
+        onClick={props.removeIngredient}
+        className="btn btn-danger btn-sm m-1"
+      >
+        Less
+      </Button>
+      <Button
+        onClick={props.addIngredient}
+        className="btn btn-success btn-sm m-1"
+      >
+        More
+      </Button>
     </div>
   );
 };
@@ -51,6 +61,8 @@ const Controls = (props) => {
             return (
               <BuildControl
                 label={item.label}
+                addIngredient={() => props.addIngredient(item.type)}
+                removeIngredient={() => props.removeIngredient(item.type)}
                 type={item.type}
                 key={Math.random()}
               />
