@@ -1,11 +1,19 @@
 import React from "react";
 import Burger from "./Burger/Burger";
 import Controls from "./Controls/Controls";
+import Summary from "./Summary/Summary";
+import {
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
+  Button,
+} from "reactstrap";
 
 const INGREDIENT_PRICES = {
-  salad: 1.5,
-  cheese: 2,
-  meat: 4,
+  salad: 0.5,
+  cheese: 1,
+  meat: 3,
 };
 
 export default class BurgerBuilder extends React.Component {
@@ -16,6 +24,15 @@ export default class BurgerBuilder extends React.Component {
       { type: "meat", amount: 0 },
     ],
     totalPrice: 0.5,
+    modalOpen: false,
+    purchasable: false,
+  };
+
+  updatePurchasable = (ingredients) => {
+    const sum = ingredients.reduce((sum, element) => {
+      return sum + element.amount;
+    }, 0.5);
+    this.setState({ purchasable: sum > 0.5 });
   };
 
   addIngredientHandler = (type) => {
@@ -29,6 +46,7 @@ export default class BurgerBuilder extends React.Component {
       ingredients: updatedIngredients,
       totalPrice: newPrice,
     });
+    this.updatePurchasable(updatedIngredients);
   };
 
   removeIngredientHandler = (type) => {
@@ -45,17 +63,48 @@ export default class BurgerBuilder extends React.Component {
       ingredients: updatedIngredients,
       totalPrice: newPrice,
     });
+    this.updatePurchasable(updatedIngredients);
   };
 
   render() {
     return (
-      <div className="d-flex flex-md-row flex-column">
-        <Burger ingredients={this.state.ingredients} />
-        <Controls
-          addIngredient={this.addIngredientHandler}
-          removeIngredient={this.removeIngredientHandler}
-          price={this.state.totalPrice}
-        />
+      <div>
+        <div className="d-flex flex-md-row flex-column">
+          <Burger ingredients={this.state.ingredients} />
+          <Controls
+            addIngredient={this.addIngredientHandler}
+            removeIngredient={this.removeIngredientHandler}
+            price={this.state.totalPrice}
+            purchasable={this.state.purchasable}
+            toggleModal={() => {
+              this.setState({
+                modalOpen: !this.state.modalOpen,
+              });
+            }}
+          />
+        </div>
+        <Modal isOpen={this.state.modalOpen}>
+          <ModalHeader>Your Order Summary</ModalHeader>
+          <ModalBody>
+            <h5>Total Price: £{this.state.totalPrice}</h5>
+            <Summary ingredients={this.state.ingredients} />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={this.toggleModal}>
+              Continue to Checkout
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() => {
+                this.setState({
+                  modalOpen: !this.state.modalOpen,
+                });
+              }}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
