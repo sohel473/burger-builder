@@ -1,7 +1,8 @@
 import React from "react";
-import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap";
+import { Navbar, NavbarBrand, Nav, NavItem } from "reactstrap";
 import Logo from "../../assets/logo.png";
 import "./Header.css";
+import { NavLink } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -12,8 +13,13 @@ const Header = () => {
         </NavbarBrand>
         <Nav className="mr-md-5">
           <NavItem>
-            <NavLink href="#" className="NavLink">
-              Something
+            <NavLink exact className="NavLink" to="/">
+              Burger Builder
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink exact className="NavLink" to="/orders">
+              Orders
             </NavLink>
           </NavItem>
         </Nav>
