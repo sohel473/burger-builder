@@ -21,6 +21,9 @@ const Header = () => {
             <NavLink exact className="NavLink" to="/orders">
               Orders
             </NavLink>
+            <NavLink exact className="NavLink" to="/login">
+              Login
+            </NavLink>
           </NavItem>
         </Nav>
       </Navbar>
