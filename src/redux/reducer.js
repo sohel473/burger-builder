@@ -71,13 +71,23 @@ export const reducer = (state = INITIAL_STATE, action) => {
       const orders = action.payload;
       let orderArray = [];
       for (const order in orders) {
-        orderArray.push({ ...orders[order], id: order });
+        orderArray.push({
+          ...orders[order],
+          id: order,
+        });
       }
       // console.log(orderArray);
       // return state;
       return {
         ...state,
         orders: orderArray,
+        orderLoading: false,
+      };
+
+    case actionTypes.ORDER_LOAD_FAILED:
+      return {
+        ...state,
+        orderErr: true,
         orderLoading: false,
       };
 

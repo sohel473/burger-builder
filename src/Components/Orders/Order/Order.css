@@ -1,0 +1,14 @@
+.Order {
+  border: 1px solid grey;
+  box-shadow: 1px 1px #888888;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+.Ingredients {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px;
+  margin-right: 10px;
+}
