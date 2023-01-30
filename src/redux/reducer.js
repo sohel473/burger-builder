@@ -14,6 +14,9 @@ const INITIAL_STATE = {
   ],
   totalPrice: 0,
   purchasable: false,
+  orders: [],
+  orderLoading: true,
+  orderErr: false,
 };
 
 export const reducer = (state = INITIAL_STATE, action) => {
@@ -62,6 +65,20 @@ export const reducer = (state = INITIAL_STATE, action) => {
         ],
         totalPrice: 0,
         purchasable: false,
+      };
+
+    case actionTypes.LOAD_ORDERS:
+      const orders = action.payload;
+      let orderArray = [];
+      for (const order in orders) {
+        orderArray.push({ ...orders[order], id: order });
+      }
+      // console.log(orderArray);
+      // return state;
+      return {
+        ...state,
+        orders: orderArray,
+        orderLoading: false,
       };
 
     default:
