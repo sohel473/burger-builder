@@ -7,3 +7,9 @@
 * {
   background-color: aqua;
 } */
+
+.buttonForm {
+  width: 100%;
+  background-color: #d70f64 !important;
+  color: white !important;
+}
