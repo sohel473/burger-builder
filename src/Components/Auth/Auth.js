@@ -1,10 +1,17 @@
 import React, { Component } from "react";
 import { Formik } from "formik";
 import "./Auth.css";
+import { auth } from "../../redux/authActionCreators";
+import { connect } from "react-redux";
+
+const mapDispatchToProps = (dispatch) => ({
+  auth: (email, password, mode) => dispatch(auth(email, password, mode)),
+});
 
 class Auth extends Component {
   state = {
     mode: "Sign Up",
+    showPassword: false,
   };
 
   validateForm = (values) => {
@@ -40,6 +47,10 @@ class Auth extends Component {
     });
   };
 
+  togglePasswordVisibility = () => {
+    this.setState({ showPassword: !this.state.showPassword });
+  };
+
   render() {
     return (
       <div>
@@ -50,7 +61,11 @@ class Auth extends Component {
             passwordConfirm: "",
           }}
           onSubmit={(values) => {
-            console.log(values);
+            this.props.auth(
+              values.email,
+              values.password,
+              this.state.mode
+            );
           }}
           validate={this.validateForm}
         >
@@ -77,6 +92,7 @@ class Auth extends Component {
                 <br />
                 <input
                   name="password"
+                  type={this.state.showPassword ? "text" : "password"}
                   placeholder="Password"
                   className="form-control"
                   value={values.password}
@@ -88,6 +104,7 @@ class Auth extends Component {
                   <div>
                     <input
                       name="passwordConfirm"
+                      type={this.state.showPassword ? "text" : "password"}
                       placeholder="Confirm Password"
                       className="form-control"
                       value={values.passwordConfirm}
@@ -99,7 +116,12 @@ class Auth extends Component {
                     <br />
                   </div>
                 ) : null}
-
+                <input
+                  type="checkbox"
+                  onClick={this.togglePasswordVisibility}
+                />
+                <label style={{ paddingLeft: "5px" }}>Show Password</label>
+                <br />
                 <button type="submit" className="btn btn-success">
                   {this.state.mode === "Sign Up" ? "Sign Up" : "Login"}
                 </button>
@@ -112,4 +134,4 @@ class Auth extends Component {
   }
 }
 
-export default Auth;
+export default connect(null, mapDispatchToProps)(Auth);
