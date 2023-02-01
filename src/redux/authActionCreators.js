@@ -26,6 +26,17 @@ export const authFailed = (errMsg) => {
   };
 };
 
+const storeLocally = (token) => {
+  const decoded = jwt_decode(token);
+  const user_id = decoded.user_id;
+  const expTime = decoded.exp;
+  localStorage.setItem("token", token);
+  localStorage.setItem("userId", user_id);
+  const expirationTime = new Date(expTime * 1000);
+  localStorage.setItem("expirationTime", expirationTime);
+  return user_id;
+};
+
 export const auth = (email, password, mode) => (dispatch) => {
   dispatch(authLoading(true));
   const authData = {
@@ -52,15 +63,18 @@ export const auth = (email, password, mode) => (dispatch) => {
       dispatch(authLoading(false));
       if (mode !== "Sign Up") {
         const token = response.data.access;
-        const decoded = jwt_decode(token);
-        const user_id = decoded.user_id;
-        const expTime = decoded.exp;
-        localStorage.setItem("token", token);
-        localStorage.setItem("userId", user_id);
-        const expirationTime = new Date(expTime * 1000);
-        localStorage.setItem("expirationTime", expirationTime);
+        const user_id = storeLocally(token);
         dispatch(authSuccess(token, user_id));
-        console.log(response);
+      } else {
+        dispatch(authLoading(true));
+        return axios
+          .post("http://127.0.0.1:8000/api/token/", authData, header)
+          .then((response) => {
+            dispatch(authLoading(false));
+            const token = response.data.access;
+            const user_id = storeLocally(token);
+            dispatch(authSuccess(token, user_id));
+          });
       }
     })
     .catch((err) => {
