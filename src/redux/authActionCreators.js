@@ -1,5 +1,6 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 export const authSuccess = (token, userId) => {
   return {
@@ -42,27 +43,25 @@ export const auth = (email, password, mode) => (dispatch) => {
   if (mode === "Sign Up") {
     authUrl = "http://127.0.0.1:8000/api/user/";
   } else {
-    authUrl =
-      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+    authUrl = "http://127.0.0.1:8000/api/token/";
   }
 
   axios
     .post(authUrl, authData, header)
     .then((response) => {
       dispatch(authLoading(false));
-      // firebase part
-
-      // console.log(response);
-      // localStorage.setItem("token", response.data.idToken);
-      // localStorage.setItem("userId", response.data.localId);
-      // const expirationTime = new Date(
-      //   new Date().getTime() + response.data.expiresIn * 1000
-      // );
-      // localStorage.setItem("expirationTime", expirationTime);
-      // dispatch(authSuccess(response.data.idToken, response.data.localId));
-
-      // django part
-      console.log(response);
+      if (mode !== "Sign Up") {
+        const token = response.data.access;
+        const decoded = jwt_decode(token);
+        const user_id = decoded.user_id;
+        const expTime = decoded.exp;
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", user_id);
+        const expirationTime = new Date(expTime * 1000);
+        localStorage.setItem("expirationTime", expirationTime);
+        dispatch(authSuccess(token, user_id));
+        console.log(response);
+      }
     })
     .catch((err) => {
       dispatch(authLoading(false));
