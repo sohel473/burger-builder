@@ -30,35 +30,48 @@ export const auth = (email, password, mode) => (dispatch) => {
   const authData = {
     email: email,
     password: password,
-    returnSecureToken: true,
+  };
+
+  const header = {
+    headers: {
+      "Content-Type": "application/json",
+    },
   };
 
   let authUrl = null;
   if (mode === "Sign Up") {
-    authUrl =
-      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=";
+    authUrl = "http://127.0.0.1:8000/api/user/";
   } else {
     authUrl =
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
   }
-  const API_KEY = "AIzaSyCIw9tM3dSI7-ufzIwqvZkJpaHXD6W1hjQ";
+
   axios
-    .post(authUrl + API_KEY, authData)
+    .post(authUrl, authData, header)
     .then((response) => {
       dispatch(authLoading(false));
+      // firebase part
+
+      // console.log(response);
+      // localStorage.setItem("token", response.data.idToken);
+      // localStorage.setItem("userId", response.data.localId);
+      // const expirationTime = new Date(
+      //   new Date().getTime() + response.data.expiresIn * 1000
+      // );
+      // localStorage.setItem("expirationTime", expirationTime);
+      // dispatch(authSuccess(response.data.idToken, response.data.localId));
+
+      // django part
       console.log(response);
-      localStorage.setItem("token", response.data.idToken);
-      localStorage.setItem("userId", response.data.localId);
-      const expirationTime = new Date(
-        new Date().getTime() + response.data.expiresIn * 1000
-      );
-      localStorage.setItem("expirationTime", expirationTime);
-      dispatch(authSuccess(response.data.idToken, response.data.localId));
     })
     .catch((err) => {
       dispatch(authLoading(false));
-      dispatch(authFailed(err.response.data.error.message));
-      console.log(err.response.data.error.message);
+      const key = Object.keys(err.response.data)[0];
+      console.log(err.response.data[key]);
+      dispatch(
+        authFailed(`${key.toUpperCase()}: ${err.response.data[key]}`)
+      );
+      console.log(err.response);
     });
 };
 
