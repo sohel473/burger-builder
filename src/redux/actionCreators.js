@@ -47,12 +47,13 @@ export const fetchOrders = (token, userId) => (dispatch) => {
     },
   };
   axios
-    .get(`http://127.0.0.1:8000/api/order?user_id=${userId}`)
+    .get(`http://127.0.0.1:8000/api/order?user_id=${userId}`, header)
     .then((response) => {
       console.log(response.data);
       dispatch(loadOrders(response.data));
     })
     .catch((err) => {
+      console.log(err.response.data);
       dispatch(orderLoadFailed());
     });
 };
