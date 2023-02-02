@@ -2,14 +2,17 @@ import React from "react";
 import "./Order.css";
 
 const Order = (props) => {
-  const ingredientSummary = props.order.ingredients.map((item) => {
-    return (
-      <span className="Ingredients" key={item.type}>
-        {item.amount}x{" "}
-        <span style={{ textTransform: "capitalize" }}>{item.type}</span>
-      </span>
-    );
-  });
+  let ingredients = props.order.ingredients;
+  const ingredientSummary = Object.keys(ingredients).map(
+    (ingredient, index) => {
+      return (
+        <span className="Ingredients" key={index}>
+          {ingredients[ingredient]}x{" "}
+          <span style={{ textTransform: "capitalize" }}>{ingredient}</span>
+        </span>
+      );
+    }
+  );
   return (
     <div className="Order">
       <p>Order Number: {props.order.id}</p>

@@ -26,9 +26,9 @@ class Orders extends React.Component {
     this.props.fetchOrders(this.props.token, this.props.userId);
   }
 
-  componentDidUpdate() {
-    console.log(this.props.orders);
-  }
+  // componentDidUpdate() {
+  //   // console.log(this.props.orders);
+  // }
 
   render() {
     let orders = null;
@@ -43,7 +43,7 @@ class Orders extends React.Component {
         });
       }
     }
-    console.log(orders);
+    // console.log(orders);
     return <div>{this.props.orderLoading ? <Spinner /> : orders}</div>;
   }
 }

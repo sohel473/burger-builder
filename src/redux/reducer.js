@@ -73,13 +73,8 @@ export const reducer = (state = INITIAL_STATE, action) => {
 
     case actionTypes.LOAD_ORDERS:
       const orders = action.payload;
-      let orderArray = [];
-      for (const order in orders) {
-        orderArray.push({
-          ...orders[order],
-          id: order,
-        });
-      }
+      let orderArray = [...orders];
+      // console.log(orderArray);
       // console.log(orderArray);
       // return state;
       return {
